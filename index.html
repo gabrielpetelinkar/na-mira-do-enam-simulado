@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Na Mira do ENAM - Simulado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1b1b3a;
+      --navy-light: #2a2a52;
+      --cyan: #00b4d8;
+      --cyan-light: #48cae4;
+      --cyan-glow: rgba(0, 180, 216, 0.15);
+      --bg: #f0f2f5;
+      --card: #ffffff;
+      --text: #1b1b3a;
+      --text-light: #6b7280;
+      --success: #10b981;
+      --error: #ef4444;
+      --border: #e5e7eb;
+      --blue-line: #3b5bdb;
+      --whatsapp: #25D366;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER NA MIRA DO ENAM ===== */
+    .header {
+      background: var(--navy);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+    }
+    .header-logo img {
+      height: 48px;
+      width: auto;
+    }
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.8rem;
+    }
+    .header-right .timer-display {
+      background: rgba(255,255,255,0.08);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--cyan-light);
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-display.warning { color: #f59e0b; }
+    .timer-display.danger { color: var(--error); animation: pulse 1s infinite; }
+    @keyframes pulse { 50% { opacity: 0.5; } }
+    .blue-line {
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--blue-line), var(--cyan));
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .progress-bar {
+      flex: 1;
+      background: rgba(27,27,58,0.08);
+      border-radius: 100px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: linear-gradient(90deg, var(--cyan), var(--blue-line));
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.4s ease;
+    }
+    .progress-text {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    /* ===== QUESTION MAP (block navigation) ===== */
+    .question-map {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 12px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .qmap-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      background: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+      color: var(--text-light);
+    }
+    .qmap-btn:hover { border-color: var(--cyan); }
+    .qmap-btn.current {
+      border-color: var(--cyan);
+      background: var(--cyan);
+      color: white;
+    }
+    .qmap-btn.answered {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: var(--cyan);
+    }
+
+    /* ===== QUESTION CARD ===== */
+    .question-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      margin-bottom: 16px;
+      border-top: 3px solid var(--cyan);
+    }
+    .question-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .q-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .q-badge-number {
+      background: var(--navy);
+      color: var(--cyan);
+    }
+    .q-badge-disc {
+      background: var(--cyan-glow);
+      color: #0077b6;
+    }
+    .q-badge-topic {
+      background: #f3f4f6;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+    .q-badge-timer {
+      background: rgba(245, 158, 11, 0.1);
+      color: #d97706;
+      margin-left: auto;
+      font-variant-numeric: tabular-nums;
+    }
+    .question-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--navy);
+      line-height: 1.4;
+    }
+    .question-statement {
+      font-size: 0.92rem;
+      line-height: 1.8;
+      margin-bottom: 24px;
+      color: #374151;
+    }
+
+    /* ===== ALTERNATIVES ===== */
+    .alternatives { display: flex; flex-direction: column; gap: 8px; }
+    .alt-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      text-align: left;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .alt-btn:hover:not(.disabled) {
+      border-color: var(--cyan);
+      background: var(--cyan-glow);
+    }
+    .alt-btn.selected {
+      border-color: var(--cyan);
+      background: var(--cyan-glow);
+    }
+    .alt-btn.correct {
+      border-color: var(--success);
+      background: #ecfdf5;
+    }
+    .alt-btn.incorrect {
+      border-color: var(--error);
+      background: #fef2f2;
+    }
+    .alt-btn.disabled { cursor: default; }
+    .alt-btn.disabled:hover { border-color: var(--border); background: white; }
+    .alt-btn.correct.disabled:hover { border-color: var(--success); background: #ecfdf5; }
+    .alt-btn.incorrect.disabled:hover { border-color: var(--error); background: #fef2f2; }
+
+    /* Review detail alternatives */
+    .review-alts { margin-top: 10px; }
+    .review-alt {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+    .review-alt.is-correct { background: #ecfdf5; border: 1px solid var(--success); }
+    .review-alt.is-selected-wrong { background: #fef2f2; border: 1px solid var(--error); }
+    .review-alt .ra-letter {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.75rem;
+      background: #f3f4f6; color: var(--navy);
+    }
+    .review-alt.is-correct .ra-letter { background: var(--success); color: white; }
+    .review-alt.is-selected-wrong .ra-letter { background: var(--error); color: white; }
+    .review-alt-label { font-size: 0.7rem; font-weight: 600; margin-left: auto; white-space: nowrap; }
+
+    /* PDF download button */
+    .btn-download {
+      background: var(--navy);
+      color: var(--cyan);
+      padding: 14px 36px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s ease;
+    }
+    .btn-download:hover { background: var(--navy-light); }
+
+    .alt-letter {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--navy);
+      transition: all 0.15s ease;
+    }
+    .alt-btn.selected .alt-letter { background: var(--cyan); color: white; }
+    .alt-btn.correct .alt-letter { background: var(--success); color: white; }
+    .alt-btn.incorrect .alt-letter { background: var(--error); color: white; }
+
+    /* ===== FEEDBACK ===== */
+    .feedback {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct-fb { background: #ecfdf5; border-left: 4px solid var(--success); }
+    .feedback.incorrect-fb { background: #fef2f2; border-left: 4px solid var(--error); }
+    .feedback h4 { margin-bottom: 8px; font-size: 0.95rem; }
+    .feedback .analysis { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(0,0,0,0.08); }
+    .feedback .analysis p { margin-bottom: 6px; }
+
+    /* ===== BUTTONS ===== */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .btn {
+      padding: 12px 28px;
+      border-radius: 10px;
+      border: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--navy);
+      color: var(--cyan);
+    }
+    .btn-primary:hover { background: var(--navy-light); }
+    .btn-secondary {
+      background: #f3f4f6;
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ===== LEAD FORM ===== */
+    .lead-form {
+      max-width: 380px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .lead-form label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+    .lead-form input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: border-color 0.15s ease;
+    }
+    .lead-form input:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+    .lead-form input.error {
+      border-color: var(--error);
+    }
+    .lead-error {
+      font-size: 0.78rem;
+      color: var(--error);
+      margin-top: 4px;
+      display: none;
+    }
+    .lead-form select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: border-color 0.15s ease;
+      background: white;
+    }
+    .lead-form select:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+
+    /* ===== RESULTS ===== */
+    .results-screen { display: none; }
+    .results-screen.show { display: block; }
+
+    .score-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: white;
+      border: 4px solid rgba(255,255,255,0.2);
+    }
+    .score-circle span { font-size: 0.8rem; font-weight: 400; opacity: 0.9; }
+    .score-low { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .score-mid { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .score-high { background: linear-gradient(135deg, var(--cyan), #0077b6); }
+
+    /* Ranking card */
+    .ranking-card {
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      margin: 16px 0;
+    }
+    .ranking-card .ranking-percentile {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+    .ranking-card .ranking-label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+    .ranking-card .ranking-total {
+      font-size: 0.78rem;
+      opacity: 0.6;
+      margin-top: 8px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .stat-card .value { font-size: 1.3rem; font-weight: 700; }
+    .stat-card .label { font-size: 0.78rem; color: var(--text-light); margin-top: 2px; }
+
+    /* Time stats */
+    .time-stats {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .time-stats h3 { font-size: 0.95rem; margin-bottom: 12px; color: var(--navy); }
+    .time-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .time-stat-row:last-child { border-bottom: none; }
+    .time-stat-row .ts-label { color: var(--text-light); font-size: 0.78rem; }
+    .time-stat-row .ts-question { font-weight: 600; }
+    .time-stat-row .ts-time { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    .disc-breakdown {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .disc-breakdown h3 { font-size: 0.95rem; margin-bottom: 12px; color: var(--navy); }
+    .disc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .disc-row:last-child { border-bottom: none; }
+    .disc-bar { flex: 1; margin: 0 12px; height: 6px; background: #f3f4f6; border-radius: 100px; overflow: hidden; }
+    .disc-bar-fill { height: 100%; border-radius: 100px; transition: width 0.6s ease; }
+
+    /* ===== REVIEW ===== */
+    .review-section { margin-top: 20px; }
+    .review-section h3 { margin-bottom: 12px; font-size: 0.95rem; color: var(--navy); }
+    .review-item {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: box-shadow 0.15s ease;
+    }
+    .review-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .review-badge { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .review-badge.correct { background: #ecfdf5; color: #059669; }
+    .review-badge.wrong { background: #fef2f2; color: #dc2626; }
+    .review-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 0.85rem; line-height: 1.6; }
+    .review-detail.show { display: block; }
+    .review-time { font-size: 0.75rem; color: var(--text-light); font-variant-numeric: tabular-nums; }
+
+    /* ===== SHARE BUTTONS ===== */
+    .share-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-whatsapp {
+      background: var(--whatsapp);
+      color: white;
+      padding: 14px 28px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-whatsapp:hover { opacity: 0.9; }
+
+    /* ===== LOADING ===== */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 50vh;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(27,27,58,0.1);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== START SCREEN ===== */
+    .start-screen { text-align: center; padding: 40px 20px; }
+    .start-screen h2 { font-size: 1.2rem; margin-bottom: 8px; color: var(--navy); }
+    .start-screen .subtitle { color: var(--text-light); margin-bottom: 28px; font-size: 0.9rem; }
+    .start-info {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-bottom: 32px;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+    .start-info div { display: flex; align-items: center; gap: 6px; }
+    .btn-start {
+      background: linear-gradient(135deg, var(--cyan), #0077b6);
+      color: white;
+      padding: 14px 48px;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 14px rgba(0,180,216,0.3);
+    }
+    .btn-start:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,180,216,0.4);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 16px 12px; }
+      .header-inner { padding: 12px 16px; }
+      .header-title { font-size: 0.9rem; }
+      .header-logo img { height: 40px; }
+      .question-card { padding: 20px 16px; }
+      .question-statement { font-size: 0.85rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .header-right .q-counter { display: none; }
+      .qmap-btn { width: 32px; height: 32px; font-size: 0.7rem; }
+      .start-info { flex-direction: column; gap: 12px; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <img src="logo-na-mira.png" alt="Na Mira do ENAM">
+      </div>
+      <div class="header-right">
+        <span class="q-counter" id="header-counter"></span>
+        <span class="timer-display" id="timer" style="display: none;">00:00</span>
+      </div>
+    </div>
+    <div class="blue-line"></div>
+  </div>
+
+  <div class="container">
+
+    <!-- Loading -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p style="margin-top: 16px; color: var(--text-light); font-size: 0.9rem;">Carregando questoes...</p>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="question-card start-screen" style="display: none;">
+      <h2 id="simulado-title"></h2>
+      <p class="subtitle" id="simulado-desc"></p>
+      <div class="start-info">
+        <div>&#128221; <span id="total-questions-info">20 questoes</span></div>
+        <div>&#9201; <span>Timer por questao</span></div>
+        <div>&#127919; <span>Multipla escolha</span></div>
+      </div>
+
+      <div class="lead-form" id="start-lead-form">
+        <label for="lead-name">Seu nome</label>
+        <input type="text" id="lead-name" placeholder="Ex: Joao Silva" autocomplete="name">
+        <div class="lead-error" id="name-error">Informe seu nome</div>
+
+        <label for="lead-email">Seu e-mail</label>
+        <input type="email" id="lead-email" placeholder="Ex: joao@email.com" autocomplete="email">
+        <div class="lead-error" id="email-error">Informe um e-mail valido</div>
+
+        <label for="lead-whatsapp">WhatsApp</label>
+        <input type="tel" id="lead-whatsapp" placeholder="(11) 99999-9999" autocomplete="tel">
+        <div class="lead-error" id="whatsapp-error">Informe seu numero de WhatsApp</div>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <button class="btn-start" onclick="validateAndStart()">Iniciar Simulado</button>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div id="quiz-screen" style="display: none;">
+      <div class="progress-wrapper">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <span class="progress-text" id="question-counter">1/20</span>
+      </div>
+
+      <!-- Question Map -->
+      <div class="question-map" id="question-map"></div>
+
+      <div class="question-card">
+        <div class="question-meta">
+          <span class="q-badge q-badge-number" id="q-number"></span>
+          <span class="q-badge q-badge-disc" id="q-disc"></span>
+          <span class="q-badge q-badge-topic" id="q-topic"></span>
+          <span class="q-badge q-badge-timer" id="q-timer">&#9201; 00:00</span>
+        </div>
+        <div class="question-title" id="q-title"></div>
+        <div class="question-statement" id="q-statement"></div>
+        <div class="alternatives" id="alternatives"></div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()" disabled>Anterior</button>
+        <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Confirmar</button>
+      </div>
+    </div>
+
+    <!-- Lead gate removed - capture is now on start screen -->
+
+    <!-- Results -->
+    <div id="results-screen" class="results-screen">
+      <div class="question-card" style="text-align: center;">
+        <h2 style="margin-bottom: 20px; color: var(--navy);">Resultado do Simulado</h2>
+        <p id="results-greeting" style="font-size: 0.88rem; color: var(--text-light); margin-bottom: 16px;"></p>
+        <div class="score-circle" id="score-circle">
+          <div id="score-value">0</div>
+          <span>de <span id="score-total">20</span></span>
+        </div>
+        <p id="score-percent" style="font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 4px;"></p>
+        <p id="score-msg" style="color: var(--text-light); font-size: 0.88rem;"></p>
+      </div>
+
+      <!-- Ranking -->
+      <div class="ranking-card" id="ranking-card" style="display: none;">
+        <div style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 4px;">Ranking Comparativo</div>
+        <div class="ranking-percentile" id="ranking-percentile">-</div>
+        <div class="ranking-label" id="ranking-label"></div>
+        <div class="ranking-total" id="ranking-total"></div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="value" style="color: var(--success);" id="stat-correct">0</div>
+          <div class="label">Acertos</div>
+        </div>
+        <div class="stat-card">
+          <div class="value" style="color: var(--error);" id="stat-wrong">0</div>
+          <div class="label">Erros</div>
+        </div>
+        <div class="stat-card">
+          <div class="value" id="stat-time">00:00</div>
+          <div class="label">Tempo Total</div>
+        </div>
+        <div class="stat-card">
+          <div class="value" id="stat-avg-time">00:00</div>
+          <div class="label">Tempo Medio/Questao</div>
+        </div>
+      </div>
+
+      <!-- Time Stats -->
+      <div class="time-stats" id="time-stats">
+        <h3>Estatisticas de Tempo</h3>
+        <div class="time-stat-row" id="ts-fastest">
+          <div>
+            <div class="ts-label">Mais rapida</div>
+            <div class="ts-question" id="ts-fastest-q">-</div>
+          </div>
+          <div class="ts-time" style="color: var(--success);" id="ts-fastest-t">-</div>
+        </div>
+        <div class="time-stat-row" id="ts-slowest">
+          <div>
+            <div class="ts-label">Mais lenta</div>
+            <div class="ts-question" id="ts-slowest-q">-</div>
+          </div>
+          <div class="ts-time" style="color: var(--error);" id="ts-slowest-t">-</div>
+        </div>
+        <div class="time-stat-row">
+          <div>
+            <div class="ts-label">Tempo mediano</div>
+            <div class="ts-question">Metade das questoes</div>
+          </div>
+          <div class="ts-time" id="ts-median-t">-</div>
+        </div>
+      </div>
+
+      <div class="disc-breakdown" id="disc-breakdown">
+        <h3>Desempenho por Disciplina</h3>
+      </div>
+
+      <div class="review-section" id="review-section">
+        <h3>Revisao das Questoes</h3>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 12px;">
+          <button class="btn-download" onclick="downloadPDF()">&#128196; Download PDF</button>
+          <button class="btn-start" onclick="restartQuiz()">Refazer Simulado</button>
+        </div>
+        <div class="share-buttons">
+          <button class="btn-whatsapp" onclick="shareWhatsApp()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Compartilhar no WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Na Mira do ENAM &mdash; Simulado Interativo</div>
+
+<script>
+const SUPABASE_URL = 'https://anyfqxiytgkblhueolhn.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFueWZxeGl5dGdrYmxodWVvbGhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1OTM4MjYsImV4cCI6MjA4ODE2OTgyNn0.Ymfrsw4zJvtdEt2j-_YbrmEo-TcwiDYPPJE5Xk8IALQ';
+
+const HEADERS = {
+  'apikey': SUPABASE_ANON_KEY,
+  'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation',
+};
+
+async function sbQuery(table, params = '') {
+  const url = `${SUPABASE_URL}/rest/v1/${table}?${params}`;
+  const res = await fetch(url, { headers: HEADERS });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status} ${await res.text()}`);
+  return res.json();
+}
+
+async function sbInsert(table, body) {
+  const url = `${SUPABASE_URL}/rest/v1/${table}`;
+  const res = await fetch(url, { method: 'POST', headers: HEADERS, body: JSON.stringify(body) });
+  if (!res.ok) throw new Error(`Supabase insert error: ${res.status}`);
+  return res.json();
+}
+
+let questions = [];
+let currentIndex = 0;
+let answers = {};
+let startTime = null;
+let timerInterval = null;
+let simuladoData = null;
+
+// Per-question timing
+let questionTimes = {};       // questionId -> total seconds spent
+let questionStartedAt = null; // timestamp when current question started being viewed
+
+// Lead data
+let leadName = '';
+let leadEmail = '';
+let leadWhatsapp = '';
+let savedResultId = null;
+
+async function loadSimulado() {
+  try {
+    const SIMULADO_ID = 'a0000000-0000-0000-0000-000000000001';
+
+    const sims = await sbQuery('simulados', `id=eq.${SIMULADO_ID}`);
+    if (!sims.length) throw new Error('Simulado nao encontrado');
+    simuladoData = sims[0];
+
+    const links = await sbQuery('simulado_question_links', `simulado_id=eq.${SIMULADO_ID}&order=position`);
+    const questionIds = links.map(l => l.question_id);
+
+    const qs = await sbQuery('simulado_questions', `select=*,simulado_topics(name,simulado_disciplines(name))&id=in.(${questionIds.join(',')})`);
+
+    const alts = await sbQuery('simulado_alternatives', `question_id=in.(${questionIds.join(',')})&order=letter`);
+
+    const altsByQ = {};
+    alts.forEach(a => {
+      if (!altsByQ[a.question_id]) altsByQ[a.question_id] = [];
+      altsByQ[a.question_id].push(a);
+    });
+
+    const posMap = {};
+    links.forEach(l => { posMap[l.question_id] = l.position; });
+
+    questions = qs.map(q => ({
+      ...q,
+      position: posMap[q.id],
+      alternatives: altsByQ[q.id] || [],
+      discipline: q.simulado_topics?.simulado_disciplines?.name || '',
+      topic: q.simulado_topics?.name || '',
+    })).sort((a, b) => a.position - b.position);
+
+    // Pre-fill lead from localStorage
+    leadName = localStorage.getItem('simulado_name') || '';
+    leadEmail = localStorage.getItem('simulado_email') || '';
+    leadWhatsapp = localStorage.getItem('simulado_whatsapp') || '';
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('start-screen').style.display = 'block';
+
+    // Pre-fill inputs
+    if (leadName) document.getElementById('lead-name').value = leadName;
+    if (leadEmail) document.getElementById('lead-email').value = leadEmail;
+    if (leadWhatsapp) document.getElementById('lead-whatsapp').value = leadWhatsapp;
+    document.getElementById('simulado-title').textContent = simuladoData.title;
+    document.getElementById('simulado-desc').textContent = simuladoData.description;
+    document.getElementById('total-questions-info').textContent = `${questions.length} questoes`;
+
+  } catch (err) {
+    console.error('Erro ao carregar simulado:', err);
+    document.getElementById('loading').innerHTML = `
+      <p style="color: var(--error); font-weight: 600;">Erro ao carregar simulado</p>
+      <p style="color: var(--text-light); font-size: 0.85rem; margin-top: 8px;">${err.message}</p>
+    `;
+  }
+}
+
+function validateAndStart() {
+  const nameInput = document.getElementById('lead-name');
+  const emailInput = document.getElementById('lead-email');
+  const whatsappInput = document.getElementById('lead-whatsapp');
+  const nameError = document.getElementById('name-error');
+  const emailError = document.getElementById('email-error');
+  const whatsappError = document.getElementById('whatsapp-error');
+
+  let valid = true;
+  nameInput.classList.remove('error'); emailInput.classList.remove('error'); whatsappInput.classList.remove('error');
+  nameError.style.display = 'none'; emailError.style.display = 'none'; whatsappError.style.display = 'none';
+
+  if (!nameInput.value.trim()) { nameInput.classList.add('error'); nameError.style.display = 'block'; valid = false; }
+  if (!emailInput.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())) { emailInput.classList.add('error'); emailError.style.display = 'block'; valid = false; }
+  const whatsappClean = whatsappInput.value.replace(/\D/g, '');
+  if (whatsappClean.length < 10) { whatsappInput.classList.add('error'); whatsappError.style.display = 'block'; valid = false; }
+
+  if (!valid) return;
+
+  leadName = nameInput.value.trim();
+  leadEmail = emailInput.value.trim();
+  leadWhatsapp = whatsappInput.value.trim();
+  localStorage.setItem('simulado_name', leadName);
+  localStorage.setItem('simulado_email', leadEmail);
+  localStorage.setItem('simulado_whatsapp', leadWhatsapp);
+
+  startQuiz();
+}
+
+function startQuiz() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  document.getElementById('timer').style.display = 'block';
+  startTime = Date.now();
+  questionTimes = {};
+  questions.forEach(q => { questionTimes[q.id] = 0; });
+  questionStartedAt = Date.now();
+  timerInterval = setInterval(updateTimer, 1000);
+  renderQuestionMap();
+  renderQuestion();
+}
+
+function updateTimer() {
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+  const min = String(Math.floor(elapsed / 60)).padStart(2, '0');
+  const sec = String(elapsed % 60).padStart(2, '0');
+  document.getElementById('timer').textContent = `${min}:${sec}`;
+
+  // Update per-question timer badge
+  updateQuestionTimer();
+}
+
+function updateQuestionTimer() {
+  const q = questions[currentIndex];
+  const elapsed = questionTimes[q.id] + Math.floor((Date.now() - questionStartedAt) / 1000);
+  const min = String(Math.floor(elapsed / 60)).padStart(2, '0');
+  const sec = String(elapsed % 60).padStart(2, '0');
+  const badge = document.getElementById('q-timer');
+  badge.innerHTML = `&#9201; ${min}:${sec}`;
+
+  // Color coding
+  if (elapsed > 120) {
+    badge.style.background = 'rgba(239, 68, 68, 0.1)';
+    badge.style.color = '#dc2626';
+  } else if (elapsed > 60) {
+    badge.style.background = 'rgba(245, 158, 11, 0.1)';
+    badge.style.color = '#d97706';
+  } else {
+    badge.style.background = 'rgba(245, 158, 11, 0.1)';
+    badge.style.color = '#d97706';
+  }
+}
+
+function pauseQuestionTimer() {
+  if (questionStartedAt) {
+    const q = questions[currentIndex];
+    questionTimes[q.id] += Math.floor((Date.now() - questionStartedAt) / 1000);
+    questionStartedAt = null;
+  }
+}
+
+function resumeQuestionTimer() {
+  questionStartedAt = Date.now();
+}
+
+function renderQuestionMap() {
+  const mapDiv = document.getElementById('question-map');
+  mapDiv.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'qmap-btn';
+    if (i === currentIndex) btn.classList.add('current');
+    else if (answers[q.id]) btn.classList.add('answered');
+    btn.textContent = i + 1;
+    btn.onclick = () => goToQuestion(i);
+    mapDiv.appendChild(btn);
+  });
+}
+
+function goToQuestion(index) {
+  pauseQuestionTimer();
+  currentIndex = index;
+  resumeQuestionTimer();
+  renderQuestionMap();
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+
+  document.getElementById('progress-fill').style.width = `${((currentIndex + 1) / total) * 100}%`;
+  document.getElementById('question-counter').textContent = `${currentIndex + 1}/${total}`;
+  document.getElementById('header-counter').textContent = `Questao ${currentIndex + 1} de ${total}`;
+  document.getElementById('q-number').textContent = `Q${q.position}`;
+  document.getElementById('q-disc').textContent = q.discipline;
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-title').textContent = q.title;
+  document.getElementById('q-statement').textContent = q.statement;
+
+  updateQuestionTimer();
+
+  const altsDiv = document.getElementById('alternatives');
+  altsDiv.innerHTML = '';
+
+  q.alternatives.forEach(alt => {
+    const btn = document.createElement('button');
+    btn.className = 'alt-btn';
+    if (answers[q.id] === alt.letter) btn.classList.add('selected');
+    btn.innerHTML = `<span class="alt-letter">${alt.letter}</span><span>${alt.text}</span>`;
+    btn.onclick = () => selectAnswer(q.id, alt.letter);
+    altsDiv.appendChild(btn);
+  });
+
+  document.getElementById('btn-prev').disabled = currentIndex === 0;
+  const btnNext = document.getElementById('btn-next');
+  btnNext.textContent = currentIndex === total - 1 ? 'Finalizar' : 'Proxima';
+  btnNext.disabled = !answers[q.id];
+}
+
+function selectAnswer(qId, letter) {
+  answers[qId] = letter;
+  document.getElementById('btn-next').disabled = false;
+  renderQuestionMap();
+  renderQuestion();
+}
+
+function nextQuestion() {
+  if (!answers[questions[currentIndex].id]) return;
+  if (currentIndex < questions.length - 1) {
+    pauseQuestionTimer();
+    currentIndex++;
+    resumeQuestionTimer();
+    renderQuestionMap();
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    finishQuiz();
+  }
+}
+
+function prevQuestion() {
+  if (currentIndex > 0) {
+    pauseQuestionTimer();
+    currentIndex--;
+    resumeQuestionTimer();
+    renderQuestionMap();
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function finishQuiz() {
+  pauseQuestionTimer();
+  clearInterval(timerInterval);
+
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('timer').style.display = 'none';
+  document.getElementById('header-counter').textContent = 'Resultado';
+
+  showResults();
+}
+
+function showResults() {
+  const totalTime = Math.floor((Date.now() - startTime) / 1000);
+
+  document.getElementById('results-screen').classList.add('show');
+
+  let correct = 0;
+  const discStats = {};
+
+  questions.forEach(q => {
+    const isCorrect = answers[q.id] === q.correct_answer;
+    if (isCorrect) correct++;
+    if (!discStats[q.discipline]) discStats[q.discipline] = { total: 0, correct: 0 };
+    discStats[q.discipline].total++;
+    if (isCorrect) discStats[q.discipline].correct++;
+  });
+
+  const total = questions.length;
+  const pct = Math.round((correct / total) * 100);
+
+  // Greeting
+  const firstName = leadName.split(' ')[0];
+  document.getElementById('results-greeting').textContent = `Parabens, ${firstName}! Aqui esta seu desempenho:`;
+
+  const circle = document.getElementById('score-circle');
+  circle.className = `score-circle ${pct >= 70 ? 'score-high' : pct >= 40 ? 'score-mid' : 'score-low'}`;
+  document.getElementById('score-value').textContent = correct;
+  document.getElementById('score-total').textContent = total;
+  document.getElementById('score-percent').textContent = `${pct}% de aproveitamento`;
+
+  const msgs = {
+    high: 'Excelente! Voce domina os temas abordados.',
+    mid: 'Bom desempenho! Continue para consolidar.',
+    low: 'Reforce seus estudos nos temas com mais erros.'
+  };
+  document.getElementById('score-msg').textContent = pct >= 70 ? msgs.high : pct >= 40 ? msgs.mid : msgs.low;
+
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = total - correct;
+  const min = String(Math.floor(totalTime / 60)).padStart(2, '0');
+  const sec = String(totalTime % 60).padStart(2, '0');
+  document.getElementById('stat-time').textContent = `${min}:${sec}`;
+  const avg = Math.floor(totalTime / total);
+  document.getElementById('stat-avg-time').textContent = `${String(Math.floor(avg / 60)).padStart(2, '0')}:${String(avg % 60).padStart(2, '0')}`;
+
+  // Time stats (fastest/slowest)
+  renderTimeStats();
+
+  // Discipline breakdown
+  const discDiv = document.getElementById('disc-breakdown');
+  let discHtml = '<h3>Desempenho por Disciplina</h3>';
+  Object.entries(discStats).forEach(([name, stats]) => {
+    const p = Math.round((stats.correct / stats.total) * 100);
+    const color = p >= 70 ? 'var(--cyan)' : p >= 40 ? '#f59e0b' : 'var(--error)';
+    discHtml += `
+      <div class="disc-row">
+        <span style="flex-shrink: 0; width: 180px;">${name}</span>
+        <div class="disc-bar"><div class="disc-bar-fill" style="width: ${p}%; background: ${color};"></div></div>
+        <span style="flex-shrink: 0; font-weight: 600;">${stats.correct}/${stats.total}</span>
+      </div>`;
+  });
+  discDiv.innerHTML = discHtml;
+
+  // Review
+  const reviewDiv = document.getElementById('review-section');
+  let reviewHtml = '<h3>Revisao das Questoes</h3>';
+  questions.forEach((q, i) => {
+    const isCorrect = answers[q.id] === q.correct_answer;
+    const selectedAlt = q.alternatives.find(a => a.letter === answers[q.id]);
+    const correctAlt = q.alternatives.find(a => a.letter === q.correct_answer);
+    const qTime = questionTimes[q.id] || 0;
+    const qTimeStr = `${String(Math.floor(qTime / 60)).padStart(2, '0')}:${String(qTime % 60).padStart(2, '0')}`;
+
+    let altsHtml = '<div class="review-alts">';
+    if (!isCorrect && selectedAlt) {
+      altsHtml += `<div class="review-alt is-selected-wrong">
+        <span class="ra-letter">${selectedAlt.letter}</span>
+        <span>${selectedAlt.text}</span>
+        <span class="review-alt-label" style="color: var(--error);">Sua resposta</span>
+      </div>`;
+    }
+    if (correctAlt) {
+      altsHtml += `<div class="review-alt is-correct">
+        <span class="ra-letter">${correctAlt.letter}</span>
+        <span>${correctAlt.text}</span>
+        <span class="review-alt-label" style="color: var(--success);">${isCorrect ? 'Sua resposta (correta)' : 'Resposta correta'}</span>
+      </div>`;
+    }
+    altsHtml += '</div>';
+
+    let explanationHtml = '';
+    if (q.detailed_explanation) {
+      explanationHtml = `<p style="margin-top: 10px; font-size: 0.82rem; line-height: 1.6; color: #374151;"><strong>Explicacao:</strong> ${q.detailed_explanation.substring(0, 400)}${q.detailed_explanation.length > 400 ? '...' : ''}</p>`;
+    }
+
+    reviewHtml += `
+      <div class="review-item" onclick="toggleReview(${i})">
+        <div class="review-header">
+          <span><strong>Q${q.position}</strong> - ${q.title.substring(0, 50)}${q.title.length > 50 ? '...' : ''}</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="review-time">${qTimeStr}</span>
+            <span class="review-badge ${isCorrect ? 'correct' : 'wrong'}">${isCorrect ? 'Acerto' : 'Erro'}</span>
+          </div>
+        </div>
+        <div style="font-size: 0.78rem; color: var(--text-light);">${q.discipline} &rsaquo; ${q.topic}</div>
+        <div class="review-detail" id="review-${i}">
+          ${altsHtml}
+          ${explanationHtml}
+        </div>
+      </div>`;
+  });
+  reviewDiv.innerHTML = reviewHtml;
+
+  saveResults(correct, total, totalTime, discStats);
+  loadRanking(correct, total); // Load ranking independently of save
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderTimeStats() {
+  const timeEntries = questions.map(q => ({
+    id: q.id,
+    position: q.position,
+    title: q.title,
+    time: questionTimes[q.id] || 0,
+  }));
+
+  const sorted = [...timeEntries].sort((a, b) => a.time - b.time);
+  const fastest = sorted[0];
+  const slowest = sorted[sorted.length - 1];
+  const medianIdx = Math.floor(sorted.length / 2);
+  const median = sorted[medianIdx];
+
+  function fmtTime(s) {
+    return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  }
+
+  document.getElementById('ts-fastest-q').textContent = `Q${fastest.position} - ${fastest.title.substring(0, 35)}${fastest.title.length > 35 ? '...' : ''}`;
+  document.getElementById('ts-fastest-t').textContent = fmtTime(fastest.time);
+
+  document.getElementById('ts-slowest-q').textContent = `Q${slowest.position} - ${slowest.title.substring(0, 35)}${slowest.title.length > 35 ? '...' : ''}`;
+  document.getElementById('ts-slowest-t').textContent = fmtTime(slowest.time);
+
+  document.getElementById('ts-median-t').textContent = fmtTime(median.time);
+}
+
+function toggleReview(index) {
+  document.getElementById(`review-${index}`).classList.toggle('show');
+}
+
+async function saveResults(correct, total, totalTime, discStats) {
+  try {
+    const results = await sbInsert('simulado_results', {
+      simulado_id: 'a0000000-0000-0000-0000-000000000001',
+      participant_name: leadName,
+      participant_email: leadEmail,
+      participant_whatsapp: leadWhatsapp,
+      total_score: correct,
+      total_questions: total,
+      total_time_seconds: totalTime,
+      score_by_discipline: discStats,
+    });
+
+    if (results && results.length > 0) {
+      savedResultId = results[0].id;
+
+      // Save individual answers
+      const answerRows = questions.map(q => ({
+        result_id: savedResultId,
+        question_id: q.id,
+        selected_answer: answers[q.id],
+        is_correct: answers[q.id] === q.correct_answer,
+        time_seconds: questionTimes[q.id] || 0,
+      }));
+
+      await sbInsert('simulado_answers', answerRows);
+    }
+
+  } catch (err) {
+    console.error('Erro ao salvar resultado:', err);
+  }
+}
+
+async function loadRanking(myScore, total) {
+  try {
+    const allResults = await sbQuery('simulado_results', `simulado_id=eq.a0000000-0000-0000-0000-000000000001&select=total_score`);
+
+    if (allResults.length < 2) {
+      document.getElementById('ranking-card').style.display = 'block';
+      document.getElementById('ranking-percentile').textContent = '---';
+      document.getElementById('ranking-label').textContent = 'Voce e o primeiro participante!';
+      document.getElementById('ranking-total').textContent = `${allResults.length} participante(s) ate agora`;
+      return;
+    }
+
+    const scores = allResults.map(r => r.total_score);
+    const belowMe = scores.filter(s => s < myScore).length;
+    const percentile = Math.round((belowMe / scores.length) * 100);
+
+    document.getElementById('ranking-card').style.display = 'block';
+    document.getElementById('ranking-percentile').textContent = `Top ${100 - percentile}%`;
+    document.getElementById('ranking-label').textContent = `Voce foi melhor que ${percentile}% dos participantes`;
+    document.getElementById('ranking-total').textContent = `${scores.length} participantes ate agora`;
+  } catch (err) {
+    console.error('Erro ao carregar ranking:', err);
+  }
+}
+
+function shareWhatsApp() {
+  let correct = 0;
+  questions.forEach(q => { if (answers[q.id] === q.correct_answer) correct++; });
+  const total = questions.length;
+  const pct = Math.round((correct / total) * 100);
+
+  const text = encodeURIComponent(
+    `🎯 *Na Mira do ENAM - Simulado*\n\n` +
+    `Acertei ${correct} de ${total} questoes (${pct}%)!\n\n` +
+    `Faca voce tambem e compare seu resultado:\n` +
+    `${window.location.href}`
+  );
+
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function restartQuiz() {
+  currentIndex = 0;
+  answers = {};
+  questionTimes = {};
+  startTime = null;
+  savedResultId = null;
+  document.getElementById('results-screen').classList.remove('show');
+  document.getElementById('start-screen').style.display = 'block';
+  document.getElementById('header-counter').textContent = '';
+}
+
+function downloadPDF() {
+  const link = document.createElement('a');
+  link.href = 'simulado-comentado.pdf';
+  link.download = 'Simulado-Comentado-Na-Mira-do-ENAM.pdf';
+  link.click();
+}
+
+loadSimulado();
+</script>
+</body>
+</html>
