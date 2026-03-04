@@ -716,32 +716,32 @@
     <!-- Loading -->
     <div id="loading" class="loading">
       <div class="spinner"></div>
-      <p style="margin-top: 16px; color: var(--text-light); font-size: 0.9rem;">Carregando questoes...</p>
+      <p style="margin-top: 16px; color: var(--text-light); font-size: 0.9rem;">Carregando questões...</p>
     </div>
 
     <!-- Start Screen -->
     <div id="start-screen" class="question-card start-screen" style="display: none;">
-      <h1 class="headline">Simulado ENAM — No Padrao Real da FGV</h1>
+      <h1 class="headline">Simulado ENAM — No Padrão Real da FGV</h1>
       <span class="headline-free">Gratuito</span>
 
       <p class="subtitle">
-        <strong>20 questoes construidas a partir da analise de 400 questoes reais das 5 edicoes do ENAM.</strong>
-        O teste mais proximo da prova que voce vai encontrar.
+        <strong>20 questões construídas a partir da análise de 400 questões reais das 5 edições do ENAM.</strong>
+        O teste mais próximo da prova que você vai encontrar.
       </p>
 
       <p class="subtitle" style="margin-bottom: 28px;">
-        Isso aqui e so um gostinho. Uma amostra gratis do que o Na Mira do ENAM entrega na preparacao completa
-        — cronograma semanal, simulados ineditos no padrao FGV e priorizacao tema a tema pelo DNA real da banca.
+        Isso aqui é só um gostinho. Uma amostra grátis do que o Na Mira do ENAM entrega na preparação completa
+        — cronograma semanal, simulados inéditos no padrão FGV e priorização tema a tema pelo DNA real da banca.
       </p>
 
       <div class="badges">
         <div class="badge">
-          <div class="badge-title">20 questoes</div>
+          <div class="badge-title">20 questões</div>
           <div class="badge-desc">Formato A-E da prova real</div>
         </div>
         <div class="badge">
-          <div class="badge-title">Padrao FGV</div>
-          <div class="badge-desc">Calibrado em 400 questoes reais</div>
+          <div class="badge-title">Padrão FGV</div>
+          <div class="badge-desc">Calibrado em 400 questões reais</div>
         </div>
         <div class="badge">
           <div class="badge-title">Resultado na hora</div>
@@ -750,7 +750,7 @@
       </div>
 
       <div class="start-context">
-        Prova dia 7 de junho. Voce sabe onde esta perdendo pontos?
+        Prova dia 7 de junho. Você sabe onde está perdendo pontos?
       </div>
 
       <div class="lead-form" id="start-lead-form">
@@ -760,15 +760,15 @@
 
         <label for="lead-email">Seu e-mail</label>
         <input type="email" id="lead-email" placeholder="Ex: joao@email.com" autocomplete="email">
-        <div class="lead-error" id="email-error">Informe um e-mail valido</div>
+        <div class="lead-error" id="email-error">Informe um e-mail válido</div>
 
         <label for="lead-whatsapp">WhatsApp com DDD</label>
         <input type="tel" id="lead-whatsapp" placeholder="(11) 99999-9999" autocomplete="tel">
-        <div class="lead-error" id="whatsapp-error">Informe seu numero de WhatsApp</div>
+        <div class="lead-error" id="whatsapp-error">Informe seu número de WhatsApp</div>
       </div>
 
       <div style="margin-top: 24px;">
-        <button class="btn-start" onclick="validateAndStart()">Quero testar minha preparacao</button>
+        <button class="btn-start" onclick="validateAndStart()">Quero testar minha preparação</button>
       </div>
       <p class="start-microcopy">30 minutos. Gratuito. Gabarito comentado no final.</p>
     </div>
@@ -839,16 +839,16 @@
         </div>
         <div class="stat-card">
           <div class="value" id="stat-avg-time">00:00</div>
-          <div class="label">Tempo Medio/Questao</div>
+          <div class="label">Tempo Médio/Questão</div>
         </div>
       </div>
 
       <!-- Time Stats -->
       <div class="time-stats" id="time-stats">
-        <h3>Estatisticas de Tempo</h3>
+        <h3>Estatísticas de Tempo</h3>
         <div class="time-stat-row" id="ts-fastest">
           <div>
-            <div class="ts-label">Mais rapida</div>
+            <div class="ts-label">Mais rápida</div>
             <div class="ts-question" id="ts-fastest-q">-</div>
           </div>
           <div class="ts-time" style="color: var(--success);" id="ts-fastest-t">-</div>
@@ -863,7 +863,7 @@
         <div class="time-stat-row">
           <div>
             <div class="ts-label">Tempo mediano</div>
-            <div class="ts-question">Metade das questoes</div>
+            <div class="ts-question">Metade das questões</div>
           </div>
           <div class="ts-time" id="ts-median-t">-</div>
         </div>
@@ -874,7 +874,7 @@
       </div>
 
       <div class="review-section" id="review-section">
-        <h3>Revisao das Questoes</h3>
+        <h3>Revisão das Questões</h3>
       </div>
 
       <div style="text-align: center; margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
@@ -1105,7 +1105,7 @@ function renderQuestion() {
 
   document.getElementById('progress-fill').style.width = `${((currentIndex + 1) / total) * 100}%`;
   document.getElementById('question-counter').textContent = `${currentIndex + 1}/${total}`;
-  document.getElementById('header-counter').textContent = `Questao ${currentIndex + 1} de ${total}`;
+  document.getElementById('header-counter').textContent = `Questão ${currentIndex + 1} de ${total}`;
   document.getElementById('q-number').textContent = `Q${q.position}`;
   document.getElementById('q-disc').textContent = q.discipline;
   document.getElementById('q-topic').textContent = q.topic;
@@ -1128,7 +1128,7 @@ function renderQuestion() {
 
   document.getElementById('btn-prev').disabled = currentIndex === 0;
   const btnNext = document.getElementById('btn-next');
-  btnNext.textContent = currentIndex === total - 1 ? 'Finalizar' : 'Proxima';
+  btnNext.textContent = currentIndex === total - 1 ? 'Finalizar' : 'Próxima';
   btnNext.disabled = !answers[q.id];
 }
 
@@ -1205,7 +1205,7 @@ function showResults() {
   document.getElementById('score-percent').textContent = `${pct}% de aproveitamento`;
 
   const msgs = {
-    high: 'Excelente! Voce domina os temas abordados.',
+    high: 'Excelente! Você domina os temas abordados.',
     mid: 'Bom desempenho! Continue para consolidar.',
     low: 'Reforce seus estudos nos temas com mais erros.'
   };
@@ -1239,7 +1239,7 @@ function showResults() {
 
   // Review
   const reviewDiv = document.getElementById('review-section');
-  let reviewHtml = '<h3>Revisao das Questoes</h3>';
+  let reviewHtml = '<h3>Revisão das Questões</h3>';
   questions.forEach((q, i) => {
     const isCorrect = answers[q.id] === q.correct_answer;
     const selectedAlt = q.alternatives.find(a => a.letter === answers[q.id]);
@@ -1266,7 +1266,7 @@ function showResults() {
 
     let explanationHtml = '';
     if (q.detailed_explanation) {
-      explanationHtml = `<p style="margin-top: 10px; font-size: 0.82rem; line-height: 1.6; color: #374151;"><strong>Explicacao:</strong> ${q.detailed_explanation.substring(0, 400)}${q.detailed_explanation.length > 400 ? '...' : ''}</p>`;
+      explanationHtml = `<p style="margin-top: 10px; font-size: 0.82rem; line-height: 1.6; color: #374151;"><strong>Explicação:</strong> ${q.detailed_explanation.substring(0, 400)}${q.detailed_explanation.length > 400 ? '...' : ''}</p>`;
     }
 
     reviewHtml += `
@@ -1363,8 +1363,8 @@ async function loadRanking(myScore, total) {
     if (allResults.length < 2) {
       document.getElementById('ranking-card').style.display = 'block';
       document.getElementById('ranking-percentile').textContent = '---';
-      document.getElementById('ranking-label').textContent = 'Voce e o primeiro participante!';
-      document.getElementById('ranking-total').textContent = `${allResults.length} participante(s) ate agora`;
+      document.getElementById('ranking-label').textContent = 'Você é o primeiro participante!';
+      document.getElementById('ranking-total').textContent = `${allResults.length} participante(s) até agora`;
       return;
     }
 
@@ -1374,8 +1374,8 @@ async function loadRanking(myScore, total) {
 
     document.getElementById('ranking-card').style.display = 'block';
     document.getElementById('ranking-percentile').textContent = `Top ${100 - percentile}%`;
-    document.getElementById('ranking-label').textContent = `Voce foi melhor que ${percentile}% dos participantes`;
-    document.getElementById('ranking-total').textContent = `${scores.length} participantes ate agora`;
+    document.getElementById('ranking-label').textContent = `Você foi melhor que ${percentile}% dos participantes`;
+    document.getElementById('ranking-total').textContent = `${scores.length} participantes até agora`;
   } catch (err) {
     console.error('Erro ao carregar ranking:', err);
   }
@@ -1389,8 +1389,8 @@ function shareWhatsApp() {
 
   const text = encodeURIComponent(
     `🎯 *Na Mira do ENAM - Simulado*\n\n` +
-    `Acertei ${correct} de ${total} questoes (${pct}%)!\n\n` +
-    `Faca voce tambem e compare seu resultado:\n` +
+    `Acertei ${correct} de ${total} questões (${pct}%)!\n\n` +
+    `Faça você também e compare seu resultado:\n` +
     `${window.location.href}`
   );
 
